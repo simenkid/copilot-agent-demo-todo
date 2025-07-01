@@ -11,10 +11,10 @@ class TodoApp {
     init() {
         // 從 LocalStorage 載入資料
         this.loadTodos();
-        
+
         // 綁定事件
         this.bindEvents();
-        
+
         // 初始渲染
         this.render();
     }
@@ -35,7 +35,7 @@ class TodoApp {
     addTodo() {
         const input = document.getElementById('todoInput');
         const text = input.value.trim();
-        
+
         if (!text) return;
 
         const todo = {
@@ -48,7 +48,7 @@ class TodoApp {
         this.todos.push(todo);
         this.saveTodos();
         this.render();
-        
+
         input.value = '';
     }
 
@@ -63,19 +63,18 @@ class TodoApp {
 
     deleteTodo(id) {
         this.todos = this.todos.filter(t => t.id !== id);
-        // BUG: 忘記呼叫 saveTodos()，導致刪除後重新整理會還原
-        // this.saveTodos();
+        this.saveTodos(); // 修正：刪除後立即儲存
         this.render();
     }
 
     setFilter(filter) {
         this.currentFilter = filter;
-        
+
         // 更新按鈕狀態
         document.querySelectorAll('.filter-btn').forEach(btn => {
             btn.classList.toggle('active', btn.dataset.filter === filter);
         });
-        
+
         this.render();
     }
 
@@ -103,7 +102,7 @@ class TodoApp {
     render() {
         const todoList = document.getElementById('todoList');
         const filteredTodos = this.getFilteredTodos();
-        
+
         if (filteredTodos.length === 0) {
             todoList.innerHTML = '<li class="empty-state">沒有任務</li>';
         } else {
@@ -118,7 +117,7 @@ class TodoApp {
                 </li>
             `).join('');
         }
-        
+
         this.updateStats();
     }
 
